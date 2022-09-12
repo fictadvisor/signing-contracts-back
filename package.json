@@ -1,0 +1,27 @@
+{
+  "name": "signing-contracts-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fictadvisor/signing-contracts-back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fictadvisor/signing-contracts-back/issues"
+  },
+  "homepage": "https://github.com/fictadvisor/signing-contracts-back#readme",
+  "dependencies": {
+    "content-disposition": "^0.5.4",
+    "cors": "^2.8.5",
+    "docxtemplater": "^3.31.3",
+    "express": "^4.18.1",
+    "pizzip": "^3.1.1",
+    "uuid": "^9.0.0"
+  }
+}
