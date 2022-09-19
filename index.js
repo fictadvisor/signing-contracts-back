@@ -65,7 +65,7 @@ app.post('/documents/download', async (req, res) => {
 
   const fileName = `${data.specialization}_${data.payment_type}_${data.learning_mode}.docx`;
 
-  const content = fs.readFileSync(`./templates/${fileName}`, 'binary');
+  const content = fs.readFileSync(`./templates_education/${fileName}`, 'binary');
   const zip = new PizZip(content);
   const document = new Docxtemplater(zip);
 
