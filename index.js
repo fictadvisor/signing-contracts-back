@@ -107,6 +107,9 @@ app.post('/documents/download', async (req, res) => {
     if (!data['parent_' + name] || data['parent_' + name] === '+380') data['parent_' + name] = '';
   }
 
+  data['index'] = '';
+  data['parent_index'] = '';
+
   data['big'] = data['last_name'].toUpperCase();
   data['parent_big'] = data['parent_last_name'].toUpperCase();
 
