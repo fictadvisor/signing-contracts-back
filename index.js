@@ -104,7 +104,7 @@ app.post('/documents/download', async (req, res) => {
 
   for (const name of docFields) {
     if (!data[name]) data[name] = '';
-    if (!data['parent_' + name]) data['parent_' + name] = '';
+    if (!data['parent_' + name] || data['parent_' + name] === '+380') data['parent_' + name] = '';
   }
 
   data['big'] = data['last_name'].toUpperCase();
