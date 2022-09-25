@@ -5,7 +5,6 @@ const cors = require('cors');
 const Docxtemplater = require("docxtemplater");
 const {v4: uuid} = require("uuid");
 const {contentDisposition} = require("express/lib/utils");
-const Excel = require('exceljs');
 const app = express();
 const PORT = 5000;
 
@@ -45,7 +44,7 @@ app.post('/documents/download', async (req, res) => {
     if (!data[name]) data[name] = '';
     if (!data['parent_' + name] || data['parent_' + name] === '+380') data['parent_' + name] = '';
   }
-  if (!data['program']) data['program'] = '_ОНП';
+  if (!data['program']) data['program'] = 'ОНП';
 
   data['index'] = '';
   data['parent_index'] = '';
@@ -67,25 +66,30 @@ app.post('/documents/download', async (req, res) => {
   if (data['parent_passport_institute'] !== "" && data['parent_passport_date'] !== "") data['parent_passport_institute'] += ',';
   if (data['parent_first_name'] === "") data['noParent'] = true;
 
-  const fileName1 = `Контракт_${data.learning_mode}_${data.specialization}_${data.program}.docx`;
+  const fileName1 = `${data.payment_type}_${data.learning_mode}_${data.specialization}_${data.program}.docx`;
   const buffer1 = generateDoc(`./templates_education/${fileName1}`, data);
   const id1 = uuid();
   temp[id1] = { buffer: buffer1, fileName: fileName1 };
 
-  if (data['noParent']){
+  if (data.payment_type === 'Контракт'){
+    if (data['noParent']){
 
-    for (const name of docFields) {
-      if (data['parent_' + name] === '') data['parent_' + name] = data[name];
+      for (const name of docFields) {
+        if (data['parent_' + name] === '') data['parent_' + name] = data[name];
+      }
+      data['big'] = data['last_name'].toUpperCase();
+      data['parent_big'] = data['parent_last_name'].toUpperCase();
     }
-    data['big'] = data['last_name'].toUpperCase();
-    data['parent_big'] = data['parent_last_name'].toUpperCase();
+    const fileName2 = `${data.specialization}_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+    const buffer2 = generateDoc(`./templates_payment/${fileName2}`, data);
+    const id2 = uuid();
+    temp[id2] = { buffer: buffer2, fileName: fileName2};
+    res.status(200).json({id1, id2});
   }
-  const fileName2 = `${data.specialization}_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
-  const buffer2 = generateDoc(`./templates_payment/${fileName2}`, data);
-  const id2 = uuid();
-  temp[id2] = { buffer: buffer2, fileName: fileName2};
+  else{
+    res.status(200).json({id1});
+  }
 
-  res.status(200).json({id1, id2});
 });
 
 app.listen(PORT, () => {
