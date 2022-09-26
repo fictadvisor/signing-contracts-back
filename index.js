@@ -8,7 +8,9 @@ const {contentDisposition} = require("express/lib/utils");
 const app = express();
 const PORT = 5000;
 
-app.use(cors())
+app.use(cors({
+  origin: false,
+}))
 app.use(express.json());
 
 const temp = {};
