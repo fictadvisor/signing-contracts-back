@@ -80,7 +80,18 @@ app.post('/documents/download', async (req, res) => {
       data['big'] = data['last_name'].toUpperCase();
       data['parent_big'] = data['parent_last_name'].toUpperCase();
     }
-    const fileName2 = `${data.specialization}_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+
+    let fileName2 = `${data.specialization}_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+
+    if (data.specialization === '121'){
+      if (data.program.includes('ІПІ')){
+        fileName2 = `121_ІПІ_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+      }
+      else{
+        fileName2 = `121_ОТ_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+      }
+    }
+
     const buffer2 = generateDoc(`./templates_payment/${fileName2}`, data);
     const id2 = uuid();
     temp[id2] = { buffer: buffer2, fileName: fileName2};
