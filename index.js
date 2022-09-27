@@ -9,7 +9,7 @@ const app = express();
 const PORT = 5000;
 
 app.use(cors({
-  origin: false,
+  origin: '*',
 }))
 app.use(express.json());
 
