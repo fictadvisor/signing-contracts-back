@@ -46,7 +46,8 @@ app.post('/documents/download', async (req, res) => {
     if (!data[name]) data[name] = '';
     if (!data['parent_' + name] || data['parent_' + name] === '+380') data['parent_' + name] = '';
   }
-  if (!data['program']) data['program'] = 'ОНП';
+  if (!data['program'] && data.specialization !== '121') data['program'] = 'ОНП';
+  else if (!data['program']) data['program'] = 'ОПП_ІПІ';
 
   data['index'] = '';
   data['parent_index'] = '';
@@ -87,18 +88,24 @@ app.post('/documents/download', async (req, res) => {
       data['big'] = data['last_name'].toUpperCase();
       data['parent_big'] = data['parent_last_name'].toUpperCase();
     }
-
-    let fileName2 = `${data.specialization}_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+    let tempName;
+    if (data.program.includes('ОНП')){
+      tempName = data.specialization + '_ОНП';
+    }
+    else if (data.program.includes('ОПП')){
+      tempName = data.specialization + '_ОПП';
+    }
+    let fileName2 = `${tempName}_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
 
     if (data.specialization === '121'){
       if (data.program.includes('ІПІ')){
-        fileName2 = `121_ІПІ_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+        fileName2 = `${tempName}_ІПІ_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
       }
       else{
-        fileName2 = `121_ОТ_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
+        fileName2 = `${tempName}_ОТ_Контракт_${data.learning_mode}_${data.payment_period}.docx`;
       }
     }
-
+    console.log(fileName2);
     const buffer2 = generateDoc(`./templates_payment/${fileName2}`, data);
     const id = uuid();
     temp[id] = { buffer: buffer2, fileName: fileName2};
