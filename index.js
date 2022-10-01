@@ -36,7 +36,7 @@ app.get('/documents/download', (req, res) => {
 });
 
 app.post('/documents/download', async (req, res) => {
-  const { data } = req.body;
+  const { data, fileType } = req.body;
 
   if (typeof data !== "object") {
     throw "Wrong data";
@@ -50,9 +50,11 @@ app.post('/documents/download', async (req, res) => {
 
   data['index'] = '';
   data['parent_index'] = '';
+  data['payment_type'] = 'Контракт';
 
   data['big'] = data['last_name'].toUpperCase();
   data['parent_big'] = data['parent_last_name'].toUpperCase();
+
 
   if (data['id_code'] === "") data['id_code'] = data['passport_number']
   if (data['parent_id_code'] === "") data['parent_id_code'] = data['parent_passport_number']
@@ -68,12 +70,15 @@ app.post('/documents/download', async (req, res) => {
   if (data['parent_passport_institute'] !== "" && data['parent_passport_date'] !== "") data['parent_passport_institute'] += ',';
   if (data['parent_first_name'] === "") data['noParent'] = true;
 
-  const fileName1 = `${data.payment_type}_${data.learning_mode}_${data.specialization}_${data.program}.docx`;
-  const buffer1 = generateDoc(`./templates_education/${fileName1}`, data);
-  const id1 = uuid();
-  temp[id1] = { buffer: buffer1, fileName: fileName1 };
 
-  if (data.payment_type === 'Контракт'){
+  if (fileType === 'Договір'){
+    const fileName1 = `${data.payment_type}_${data.learning_mode}_${data.specialization}_${data.program}.docx`;
+    const buffer1 = generateDoc(`./templates_education/${fileName1}`, data);
+    const id = uuid();
+    temp[id] = { buffer: buffer1, fileName: fileName1};
+    res.status(200).json({id});
+  }
+  else if (fileType === 'Контракт'){
     if (data['noParent']){
 
       for (const name of docFields) {
@@ -95,14 +100,10 @@ app.post('/documents/download', async (req, res) => {
     }
 
     const buffer2 = generateDoc(`./templates_payment/${fileName2}`, data);
-    const id2 = uuid();
-    temp[id2] = { buffer: buffer2, fileName: fileName2};
-    res.status(200).json({id1, id2});
+    const id = uuid();
+    temp[id] = { buffer: buffer2, fileName: fileName2};
+    res.status(200).json({id});
   }
-  else{
-    res.status(200).json({id1});
-  }
-
 });
 
 app.listen(PORT, () => {
