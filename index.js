@@ -29,7 +29,8 @@ app.get('/documents/download', (req, res) => {
 
   delete temp[id];
 
-  res.setHeader('Content-Disposition', contentDisposition(doc.filename));
+  // res.set('Content-Disposition', `attachment; filename="${doc.filename}"`);
+  res.setHeader('Content-Disposition', contentDisposition(doc.fileName));
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
   res.status(200).send(doc.buffer);
